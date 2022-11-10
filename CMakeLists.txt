@@ -18,6 +18,9 @@ if(NOT Python3_Interpreter_FOUND)
 endif()
 message(STATUS "Using python: ${Python3_EXECUTABLE}")
 
+# https://bugreports.qt.io/browse/QTBUG-89754
+set(OpenGL_GL_PREFERENCE "LEGACY")
+
 # Find the required Qt packages
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
 
