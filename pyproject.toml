@@ -4,7 +4,7 @@ requires = [
     "setuptools>=45",
     "setuptools_scm[toml]>=6.0",
     "cmake_build_extension",
-    "PySide6",
+    "PySide6-Essentials",
     "shiboken6",
     "shiboken6_generator"
 ]
