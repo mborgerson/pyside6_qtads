@@ -195,6 +195,7 @@
         </object-type>
 
         <object-type name="CDockManager">
+            <enum-type name="eAutoHideFlag" />
             <enum-type name="eViewMenuInsertionOrder" />
             <enum-type name="eConfigFlag" flags="ConfigFlags" />
 
