@@ -439,7 +439,9 @@
             </modify-function>
         </object-type>
         
-        <object-type name="CPushButton" />
+        <object-type name="CPushButton">
+            <enum-type name="Orientation" />
+        </object-type>
         
         <object-type name="CResizeHandle" />
         
