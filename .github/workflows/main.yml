@@ -92,7 +92,7 @@ jobs:
             PIP_EXTRA_INDEX_URL=https://download.qt.io/official_releases/QtForPython/
             VERBOSE=1
           CIBW_ENVIRONMENT_MACOS: >
-            MACOSX_DEPLOYMENT_TARGET=10.13
+            MACOSX_DEPLOYMENT_TARGET=10.15
             CMAKE_OSX_ARCHITECTURES=${{ matrix.arch }}
             CMAKE_PREFIX_PATH=${QT6_DIR}/lib/cmake
             PIP_EXTRA_INDEX_URL=https://download.qt.io/official_releases/QtForPython/
