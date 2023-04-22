@@ -14,9 +14,13 @@ pip install PySide6-QtAds
 You may also build from source. Example build from source on Ubuntu 22.04:
 
 ```bash
-# Install Qt (e.g. with aqtinstall) to ~/Qt
-LD_LIBRARY_PATH=~/Qt/6.4.0/gcc_64/lib \
-CMAKE_PREFIX_PATH=~/Qt/6.4.0/gcc_64/lib/cmake/ \
+# Install Qt (for example, using aqtinstall)
+pip install aqtinstall
+aqt install-qt linux desktop 6.5.0 --outputdir qt
+
+# Build PySide6-QtAds
+LD_LIBRARY_PATH=$PWD/qt/6.5.0/gcc_64/lib \
+CMAKE_PREFIX_PATH=$PWD/qt/6.5.0/gcc_64/lib/cmake/ \
 PIP_EXTRA_INDEX_URL=https://download.qt.io/official_releases/QtForPython/ \
 pip install -v .
 ```
