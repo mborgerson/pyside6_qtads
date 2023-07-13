@@ -23,6 +23,7 @@
         <enum-type name="eDragState" />
         <enum-type name="eIcon" />
         <enum-type name="eBitwiseOperator" />
+        <enum-type name="eTabIndex" />
         <enum-type name="SideBarLocation" />
 
         <object-type name="CDockAreaTabBar">
@@ -128,7 +129,7 @@
         </object-type>
 
         <object-type name="CDockContainerWidget">
-            <modify-function signature="createAndSetupAutoHideContainer(ads::SideBarLocation, ads::CDockWidget*)">
+            <modify-function signature="createAndSetupAutoHideContainer(ads::SideBarLocation, ads::CDockWidget*, int)">
                 <modify-argument index="2">
                     <parent index="this" action="add"/>
                 </modify-argument>
@@ -138,7 +139,7 @@
                     <parent index="this" action="add"/>
                 </modify-argument>
             </modify-function>
-            <modify-function signature="dropWidget(QWidget*, ads::DockWidgetArea, ads::CDockAreaWidget*)">
+            <modify-function signature="dropWidget(QWidget*, ads::DockWidgetArea, ads::CDockAreaWidget*, int)">
                 <modify-argument index="1">
                     <parent index="this" action="add"/>
                 </modify-argument>
@@ -432,7 +433,7 @@
                     <parent index="this" action="remove"/>
                 </modify-argument>
             </modify-function>
-            <modify-function signature="addAutoHideWidget(ads::CAutoHideDockContainer*)">
+            <modify-function signature="addAutoHideWidget(ads::CAutoHideDockContainer*, int)">
                 <modify-argument index="1">
                     <parent index="this" action="add"/>
                 </modify-argument>
