@@ -9,6 +9,8 @@ else:
 	# Runtime library dependencies resolved via rpath
 	from .PySide6QtAds import ads as _ads
 
+ads = _ads  # make PySide6QtAds.ads available
+
 # DockWidgetArea
 DockWidgetArea = _ads.DockWidgetArea
 NoDockWidgetArea = _ads.NoDockWidgetArea
@@ -20,6 +22,9 @@ CenterDockWidgetArea = _ads.CenterDockWidgetArea
 InvalidDockWidgetArea = _ads.InvalidDockWidgetArea
 OuterDockAreas = _ads.OuterDockAreas
 AllDockAreas = _ads.AllDockAreas
+
+# SideBarLocation
+SideBarLocation = _ads.SideBarLocation
 
 # eBitwiseOperator
 BitwiseAnd = _ads.BitwiseAnd
