@@ -16,11 +16,11 @@ You may also build from source. Example build from source on Ubuntu 22.04:
 ```bash
 # Install Qt (for example, using aqtinstall)
 pip install aqtinstall
-aqt install-qt linux desktop 6.7.1 --outputdir qt
+aqt install-qt linux desktop 6.7.3 --outputdir qt
 
 # Build PySide6-QtAds
-LD_LIBRARY_PATH=$PWD/qt/6.7.1/gcc_64/lib \
-CMAKE_PREFIX_PATH=$PWD/qt/6.7.1/gcc_64/lib/cmake/ \
+LD_LIBRARY_PATH=$PWD/qt/6.7.3/gcc_64/lib \
+CMAKE_PREFIX_PATH=$PWD/qt/6.7.3/gcc_64/lib/cmake/ \
 PIP_EXTRA_INDEX_URL=https://download.qt.io/official_releases/QtForPython/ \
 pip install -v .
 ```
