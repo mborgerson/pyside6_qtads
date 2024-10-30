@@ -36,19 +36,19 @@ jobs:
         include:
           - os: windows-2022
             pyside_ver: ${{ needs.build_src.outputs.rel0 }}
-            wheel: cp310-win_amd64
+            wheel: cp39-win_amd64
             arch: x86_64
           - os: ubuntu-latest
             pyside_ver: ${{ needs.build_src.outputs.rel0 }}
-            wheel: cp310-manylinux_x86_64
+            wheel: cp39-manylinux_x86_64
             arch: x86_64
           - os: macos-13
             pyside_ver: ${{ needs.build_src.outputs.rel0 }}
-            wheel: cp310-macosx_x86_64
+            wheel: cp39-macosx_x86_64
             arch: x86_64
           - os: macos-13
             pyside_ver: ${{ needs.build_src.outputs.rel0 }}
-            wheel: cp310-macosx_arm64
+            wheel: cp39-macosx_arm64
             arch: arm64
     steps:
       - name: Setup Python
