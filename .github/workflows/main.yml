@@ -34,7 +34,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: windows-2019
+          - os: windows-2022
             pyside_ver: ${{ needs.build_src.outputs.rel0 }}
             wheel: cp310-win_amd64
             arch: x86_64
@@ -51,6 +51,11 @@ jobs:
             wheel: cp310-macosx_arm64
             arch: arm64
     steps:
+      - name: Setup Python
+        if: runner.os == 'Windows'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
       - name: Download sdist
         uses: actions/download-artifact@v4
         with:
@@ -64,7 +69,7 @@ jobs:
           QT_VERSION=$(echo ${{ matrix.pyside_ver }} | cut -d. -f-3)
           if [[ "$RUNNER_OS" == "Windows" ]]; then
             QT_BASE_DIR=${GITHUB_WORKSPACE}\\Qt
-            QT6_DIR=$QT_BASE_DIR\\$QT_VERSION\\msvc2019_64
+            QT6_DIR=$QT_BASE_DIR\\$QT_VERSION\\msvc2022_64
           elif [[ "$RUNNER_OS" == "macOS" ]]; then
             QT_BASE_DIR=${GITHUB_WORKSPACE}/Qt
             QT6_DIR=$QT_BASE_DIR/$QT_VERSION/macos
@@ -113,7 +118,7 @@ jobs:
             && python3 ./scripts/set-qt-constraint.py ${{ matrix.pyside_ver }}
           CIBW_BEFORE_BUILD_WINDOWS: >
             python3 -m pip install aqtinstall
-            && python3 -m aqt install-qt windows desktop ${{ env.QT_VERSION }} win64_msvc2019_64 --outputdir ${{ env.QT_BASE_DIR }} --base http://mirrors.ocf.berkeley.edu/qt/
+            && python3 -m aqt install-qt windows desktop ${{ env.QT_VERSION }} win64_msvc2022_64 --outputdir ${{ env.QT_BASE_DIR }} --base http://mirrors.ocf.berkeley.edu/qt/
             && python3 ./scripts/set-qt-constraint.py ${{ matrix.pyside_ver }}
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28
           CIBW_ARCHS_MACOS: x86_64 arm64
