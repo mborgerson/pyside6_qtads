@@ -143,8 +143,59 @@ jobs:
           name: wheel-${{ matrix.wheel }}
           path: ./wheelhouse/*.whl
 
+  build_aarch64_wheel:
+    name: Build wheel ${{ matrix.wheel }} for PySide ${{ matrix.pyside_ver }} on ${{ matrix.os }}
+    needs: build_src
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            pyside_ver: ${{ needs.build_src.outputs.rel0 }}
+            wheel: cp39-manylinux_aarch64
+            arch: aarch64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Download sdist
+        uses: actions/download-artifact@v4
+        with:
+          name: source
+      - name: Unpack sdist
+        shell: bash
+        run: tar --strip-components 1 -xvf *.tar.gz
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: all
+      - name: Setup Qt vars
+        shell: bash
+        run: |
+          QT_VERSION=$(echo ${{ matrix.pyside_ver }} | cut -d. -f-3)
+          echo "QT_VERSION=$QT_VERSION" >> $GITHUB_ENV
+      - name: Build
+        run: |
+          cat >build.sh <<EOF
+          set -e
+          . /env/bin/activate
+          pip install aqtinstall PySide6 auditwheel
+          aqt install-qt linux_arm64 desktop ${{ env.QT_VERSION }} --outputdir qt
+          LD_LIBRARY_PATH=/work/qt/${{ env.QT_VERSION }}/gcc_arm64/lib \
+          CMAKE_PREFIX_PATH=/work/qt/${{ env.QT_VERSION }}/gcc_arm64/lib/cmake \
+          PIP_EXTRA_INDEX_URL=https://download.qt.io/official_releases/QtForPython/ \
+          python -m build --verbose --wheel .
+          mv dist dist-orig
+          mkdir dist
+          LD_LIBRARY_PATH=/work/env/lib/python3.12/site-packages/PySide6/ \
+          python ./scripts/custom-auditwheel.py repair -w dist --only-plat --plat manylinux_2_38_aarch64 ./dist-orig/PySide6_QtAds-*.whl
+          EOF
+          docker run --platform=linux/aarch64 --rm -v $PWD:/work -w /work mborgerson/pyside6qtads-ubuntu2404-aarch64 bash ./build.sh
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheel-${{ matrix.wheel }}
+          path: ./dist/*.whl
+
   upload_pypi:
-    needs: [build_wheels, build_src]
+    needs: [build_wheels, build_aarch64_wheel, build_src]
     runs-on: ubuntu-latest
     # upload to PyPI on every tag starting with 'v'
     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
