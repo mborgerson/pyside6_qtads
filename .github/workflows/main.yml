@@ -108,7 +108,7 @@ jobs:
             VERBOSE=1
           CIBW_BEFORE_BUILD_LINUX: >
             rpm --import https://repo.almalinux.org/almalinux/RPM-GPG-KEY-AlmaLinux
-            && dnf install -y mesa-libGL libxslt llvm clang-libs
+            && yum install -y mesa-libGL libxslt llvm clang clang-devel
             && python3 -m pip install --user aqtinstall auditwheel
             && python3 -m aqt install-qt linux desktop ${{ env.QT_VERSION }} --outputdir ${{ env.QT_BASE_DIR }} --base http://mirrors.ocf.berkeley.edu/qt/
             && python3 ./scripts/set-qt-constraint.py ${{ matrix.pyside_ver }}
