@@ -183,7 +183,7 @@ jobs:
           mv dist dist-orig
           mkdir dist
           LD_LIBRARY_PATH=/work/env/lib/python3.12/site-packages/PySide6/ \
-          python ./scripts/custom-auditwheel.py repair -w dist --only-plat --plat manylinux_2_38_aarch64 ./dist-orig/PySide6_QtAds-*.whl
+          python ./scripts/custom-auditwheel.py repair -w dist --only-plat --plat manylinux_2_38_aarch64 ./dist-orig/pyside6_qtads-*.whl
           EOF
           docker run --platform=linux/aarch64 --rm -v $PWD:/work -w /work mborgerson/pyside6qtads-ubuntu2404-aarch64 bash ./build.sh
       - name: Upload artifact
