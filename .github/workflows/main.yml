@@ -109,15 +109,15 @@ jobs:
           CIBW_BEFORE_BUILD_LINUX: >
             rpm --import https://repo.almalinux.org/almalinux/RPM-GPG-KEY-AlmaLinux
             && yum install -y mesa-libGL libxslt llvm clang clang-devel
-            && python3 -m pip install --user aqtinstall auditwheel
+            && python3 -m pip install --user "aqtinstall!=3.2.1" auditwheel
             && python3 -m aqt install-qt linux desktop ${{ env.QT_VERSION }} --outputdir ${{ env.QT_BASE_DIR }} --base http://mirrors.ocf.berkeley.edu/qt/
             && python3 ./scripts/set-qt-constraint.py ${{ matrix.pyside_ver }}
           CIBW_BEFORE_BUILD_MACOS: >
-            python3 -m pip install aqtinstall
+            python3 -m pip install "aqtinstall!=3.2.1"
             && python3 -m aqt install-qt mac desktop ${{ env.QT_VERSION }} --outputdir ${{ env.QT_BASE_DIR }} --base http://mirrors.ocf.berkeley.edu/qt/
             && python3 ./scripts/set-qt-constraint.py ${{ matrix.pyside_ver }}
           CIBW_BEFORE_BUILD_WINDOWS: >
-            python3 -m pip install aqtinstall
+            python3 -m pip install "aqtinstall!=3.2.1"
             && python3 -m aqt install-qt windows desktop ${{ env.QT_VERSION }} win64_msvc2022_64 --outputdir ${{ env.QT_BASE_DIR }} --base http://mirrors.ocf.berkeley.edu/qt/
             && python3 ./scripts/set-qt-constraint.py ${{ matrix.pyside_ver }}
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28
@@ -172,7 +172,7 @@ jobs:
           cat >build.sh <<EOF
           set -e
           . /env/bin/activate
-          pip install aqtinstall PySide6 auditwheel
+          pip install "aqtinstall!=3.2.1" PySide6 auditwheel
           aqt install-qt linux_arm64 desktop ${{ env.QT_VERSION }} --outputdir qt
           LD_LIBRARY_PATH=/work/qt/${{ env.QT_VERSION }}/gcc_arm64/lib \
           CMAKE_PREFIX_PATH=/work/qt/${{ env.QT_VERSION }}/gcc_arm64/lib/cmake \
