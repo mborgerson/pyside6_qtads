@@ -108,7 +108,7 @@ jobs:
             VERBOSE=1
           CIBW_BEFORE_BUILD_LINUX: >
             rpm --import https://repo.almalinux.org/almalinux/RPM-GPG-KEY-AlmaLinux
-            && yum install -y mesa-libGL libxslt llvm clang clang-devel
+            && yum install -y mesa-libGL libxslt llvm clang clang-devel libxkbcommon-devel
             && python3 -m pip install --user "aqtinstall!=3.2.1" auditwheel
             && python3 -m aqt install-qt linux desktop ${{ env.QT_VERSION }} --outputdir ${{ env.QT_BASE_DIR }} --base http://mirrors.ocf.berkeley.edu/qt/
             && python3 ./scripts/set-qt-constraint.py ${{ matrix.pyside_ver }}
@@ -171,6 +171,8 @@ jobs:
         run: |
           cat >build.sh <<EOF
           set -e
+          apt-get update
+          apt-get install -yy libxkbcommon-dev
           . /env/bin/activate
           pip install "aqtinstall!=3.2.1" PySide6 auditwheel
           aqt install-qt linux_arm64 desktop ${{ env.QT_VERSION }} --outputdir qt
