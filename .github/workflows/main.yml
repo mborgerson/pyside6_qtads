@@ -34,7 +34,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: windows-2022
+          - os: windows-latest
             pyside_ver: ${{ needs.build_src.outputs.rel0 }}
             wheel: cp39-win_amd64
             arch: x86_64
