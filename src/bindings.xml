@@ -199,6 +199,7 @@
             <enum-type name="eViewMenuInsertionOrder" />
             <enum-type name="eConfigFlag" flags="ConfigFlags" />
             <enum-type name="eAutoHideFlag" flags="AutoHideFlags" />
+            <enum-type name="eConfigParam" flags="ConfigParam" />
 
             <modify-function signature="registerFloatingWidget(ads::CFloatingDockContainer*)">
                 <modify-argument index="1">
@@ -312,6 +313,7 @@
             <enum-type name="eInsertMode" />
             <enum-type name="eMinimumSizeHintMode" />
             <enum-type name="eToggleViewActionMode" />
+            <enum-type name="eToolBarStyleSource" />
 
             <modify-function signature="setDockManager(ads::CDockManager*)">
                 <modify-argument index="1">
