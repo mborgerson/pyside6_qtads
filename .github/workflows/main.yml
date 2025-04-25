@@ -52,7 +52,6 @@ jobs:
             arch: arm64
     steps:
       - name: Setup Python
-        if: runner.os == 'Windows'
         uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5
         with:
           python-version: '3.9'
@@ -137,6 +136,18 @@ jobs:
       #       mv $i ${pkgname}-${{ matrix.pyside_ver }}-${pkginfo}
       #     done
       #     popd
+      - name: Install test dependencies
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxkbcommon-dev libegl-dev
+          echo "QT_QPA_PLATFORM=minimal:enable_fonts" >> $GITHUB_ENV
+      - name: Test wheel
+        shell: bash
+        run: |
+          python -m pip install ./wheelhouse/*.whl
+          cd tests
+          python -m unittest discover
       - name: Upload artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
@@ -200,6 +211,11 @@ jobs:
         run: |
           mkdir dist-repaired
           python ./scripts/custom-auditwheel.py repair -w dist-repaired --only-plat --plat manylinux_2_39_aarch64 ./dist/pyside6_qtads-*.whl
+      - name: Test wheel
+        run: |
+          uv pip install ./dist-repaired/*.whl
+          cd tests
+          python -m unittest discover
       - name: Upload artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
