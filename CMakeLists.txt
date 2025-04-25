@@ -91,13 +91,13 @@ macro(pyside_config option output_var)
     endif()
 
     execute_process(
-      COMMAND ${Python3_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/pyside_config.py"
+      COMMAND ${Python3_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/scripts/pyside_config.py"
               ${option}
       OUTPUT_VARIABLE ${output_var}
       OUTPUT_STRIP_TRAILING_WHITESPACE)
 
     if ("${${output_var}}" STREQUAL "")
-        message(FATAL_ERROR "Error: Calling ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/pyside_config.py ${option} returned no output.")
+        message(FATAL_ERROR "Error: Calling ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/scripts/pyside_config.py ${option} returned no output.")
     endif()
     if(is_list)
         string (REPLACE " " ";" ${output_var} "${${output_var}}")
