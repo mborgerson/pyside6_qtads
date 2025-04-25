@@ -237,7 +237,7 @@ target_link_libraries(${bindings_library} PRIVATE ${shiboken_shared_libraries})
 
 target_compile_options(qtadvanceddocking-qt6 PRIVATE -Og -fPIC)
 target_compile_options(${bindings_library} PRIVATE -Og -fPIC)
-target_compile_definitions(${bindings_library} PRIVATE "-DPy_LIMITED_API=0x03070000")
+target_compile_definitions(${bindings_library} PRIVATE "-DPy_LIMITED_API=0x03090000")
 
 # Adjust the name of generated module.
 set_property(TARGET ${bindings_library} PROPERTY PREFIX "")
