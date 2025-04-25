@@ -162,35 +162,49 @@ jobs:
       - name: Unpack sdist
         shell: bash
         run: tar --strip-components 1 -xvf *.tar.gz
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+                  build-essential \
+                  libgl1-mesa-dev \
+                  libxslt1-dev git \
+                  libglib2.0-dev \
+                  patchelf \
+                  python-is-python3 \
+                  python3 \
+                  python3-venv \
+                  python3-pip \
+                  libxkbcommon-dev
+      - name: Install uv
+        uses: astral-sh/setup-uv@c7f87aa956e4c323abf06d5dec078e358f6b4d04 # v6
+        with:
+          python-version: "3.9"
+          activate-environment: true
+      - name: Install Python dependencies
+        run: uv pip install "aqtinstall!=3.2.1" PySide6 auditwheel
       - name: Setup Qt vars
         shell: bash
-        run: |
-          QT_VERSION=$(echo ${{ matrix.pyside_ver }} | cut -d. -f-3)
-          echo "QT_VERSION=$QT_VERSION" >> $GITHUB_ENV
+        run: echo QT_VERSION=$(echo ${{ matrix.pyside_ver }} | cut -d. -f-3) >> $GITHUB_ENV
+      - name: Install Qt
+        run: aqt install-qt linux_arm64 desktop ${{ env.QT_VERSION }} --outputdir qt
       - name: Build
+        env:
+          LD_LIBRARY_PATH: ${{ github.workspace }}/qt/${{ env.QT_VERSION }}/gcc_arm64/lib
+          CMAKE_PREFIX_PATH: ${{ github.workspace }}/qt/${{ env.QT_VERSION }}/gcc_arm64/lib/cmake
+          PIP_EXTRA_INDEX_URL: https://download.qt.io/official_releases/QtForPython/
+        run: uv build --verbose --wheel .
+      - name: Fixup wheel
+        env:
+          LD_LIBRARY_PATH: ${{ env.VIRTUAL_ENV }}/lib/python3.12/site-packages/PySide6/
         run: |
-          cat >build.sh <<EOF
-          set -e
-          apt-get update
-          apt-get install -yy libxkbcommon-dev
-          . /env/bin/activate
-          pip install "aqtinstall!=3.2.1" PySide6 auditwheel
-          aqt install-qt linux_arm64 desktop ${{ env.QT_VERSION }} --outputdir qt
-          LD_LIBRARY_PATH=/work/qt/${{ env.QT_VERSION }}/gcc_arm64/lib \
-          CMAKE_PREFIX_PATH=/work/qt/${{ env.QT_VERSION }}/gcc_arm64/lib/cmake \
-          PIP_EXTRA_INDEX_URL=https://download.qt.io/official_releases/QtForPython/ \
-          python -m build --verbose --wheel .
-          mv dist dist-orig
-          mkdir dist
-          LD_LIBRARY_PATH=/work/env/lib/python3.12/site-packages/PySide6/ \
-          python ./scripts/custom-auditwheel.py repair -w dist --only-plat --plat manylinux_2_38_aarch64 ./dist-orig/pyside6_qtads-*.whl
-          EOF
-          docker run --platform=linux/aarch64 --rm -v $PWD:/work -w /work mborgerson/pyside6qtads-ubuntu2404-aarch64 bash ./build.sh
+          mkdir dist-repaired
+          python ./scripts/custom-auditwheel.py repair -w dist-repaired --only-plat --plat manylinux_2_39_aarch64 ./dist/pyside6_qtads-*.whl
       - name: Upload artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: wheel-${{ matrix.wheel }}
-          path: ./dist/*.whl
+          path: ./dist-repaired/*.whl
 
   upload_pypi:
     needs: [build_wheels, build_aarch64_wheel, build_src]
