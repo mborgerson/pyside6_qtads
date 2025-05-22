@@ -409,6 +409,7 @@
                     <parent index="this" action="add"/>
                 </modify-argument>
             </modify-function>
+            <declare-function signature="windowHandle()" return-type="QWindow"/>
         </object-type>
 
         <object-type name="CIconProvider">
