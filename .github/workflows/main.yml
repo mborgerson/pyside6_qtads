@@ -38,6 +38,10 @@ jobs:
             pyside_ver: ${{ needs.build_src.outputs.rel0 }}
             wheel: cp39-win_amd64
             arch: x86_64
+          - os: windows-11-arm
+            pyside_ver: ${{ needs.build_src.outputs.rel0 }}
+            wheel: cp39-win_arm64
+            arch: arm64
           - os: ubuntu-latest
             pyside_ver: ${{ needs.build_src.outputs.rel0 }}
             wheel: cp39-manylinux_x86_64
@@ -54,7 +58,8 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5
         with:
-          python-version: '3.9'
+          python-version: ${{ matrix.os == 'windows-11-arm' && '3.11' || '3.9' }}
+          # 3.11 is the oldest available via actions/setup-python for Windows on ARM64
       - name: Download sdist
         uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
         with:
@@ -68,7 +73,12 @@ jobs:
           QT_VERSION=$(echo ${{ matrix.pyside_ver }} | cut -d. -f-3)
           if [[ "$RUNNER_OS" == "Windows" ]]; then
             QT_BASE_DIR=${GITHUB_WORKSPACE}\\Qt
-            QT6_DIR=$QT_BASE_DIR\\$QT_VERSION\\msvc2022_64
+            if [[ "${{ matrix.arch }}" == "arm64" ]]; then
+              echo "QT_HOST_PATH=$QT_BASE_DIR\\$QT_VERSION\\msvc2022_64" >> $GITHUB_ENV
+              QT6_DIR=$QT_BASE_DIR\\$QT_VERSION\\msvc2022_arm64
+            else
+              QT6_DIR=$QT_BASE_DIR\\$QT_VERSION\\msvc2022_64
+            fi
           elif [[ "$RUNNER_OS" == "macOS" ]]; then
             QT_BASE_DIR=${GITHUB_WORKSPACE}/Qt
             QT6_DIR=$QT_BASE_DIR/$QT_VERSION/macos
@@ -85,6 +95,8 @@ jobs:
           echo "QT6_DIR=$QT6_DIR" >> $GITHUB_ENV
       - uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 # v1
         if: runner.os == 'Windows'
+        with:
+          arch: ${{ matrix.arch }}
       - name: Build wheels
         uses: pypa/cibuildwheel@ee63bf16da6cddfb925f542f2c7b59ad50e93969 # v2.22.0
         with:
@@ -118,6 +130,7 @@ jobs:
           CIBW_BEFORE_BUILD_WINDOWS: >
             python3 -m pip install "aqtinstall!=3.2.1"
             && python3 -m aqt install-qt windows desktop ${{ env.QT_VERSION }} win64_msvc2022_64 --outputdir ${{ env.QT_BASE_DIR }} --base http://mirrors.ocf.berkeley.edu/qt/
+            && python3 -m aqt install-qt windows desktop ${{ env.QT_VERSION }} win64_msvc2022_arm64_cross_compiled --outputdir ${{ env.QT_BASE_DIR }} --base http://mirrors.ocf.berkeley.edu/qt/
             && python3 ./scripts/set-qt-constraint.py ${{ matrix.pyside_ver }}
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28
           CIBW_ARCHS_MACOS: x86_64 arm64
