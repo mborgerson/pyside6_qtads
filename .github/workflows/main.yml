@@ -55,11 +55,6 @@ jobs:
             wheel: cp39-macosx_arm64
             arch: arm64
     steps:
-      - name: Setup Python
-        uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5
-        with:
-          python-version: ${{ matrix.os == 'windows-11-arm' && '3.11' || '3.9' }}
-          # 3.11 is the oldest available via actions/setup-python for Windows on ARM64
       - name: Download sdist
         uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
         with:
@@ -140,27 +135,8 @@ jobs:
             python ./scripts/custom-auditwheel.py repair -w {dest_dir} --only-plat --plat manylinux_2_28_x86_64 {wheel}
           CIBW_REPAIR_WHEEL_COMMAND_MACOS:
           CIBW_REPAIR_WHEEL_COMMAND_WINDOWS:
-      # - name: Rename wheel to include Qt version
-      #   run: |
-      #     pushd wheelhouse
-      #     for i in *.whl; do
-      #       pkgname=$(echo $i | cut -d- -f1-2)
-      #       pkginfo=$(echo $i | cut -d- -f3-)
-      #       mv $i ${pkgname}-${{ matrix.pyside_ver }}-${pkginfo}
-      #     done
-      #     popd
-      - name: Install test dependencies
-        if: startsWith(matrix.os, 'ubuntu')
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libxkbcommon-dev libegl-dev
-          echo "QT_QPA_PLATFORM=minimal:enable_fonts" >> $GITHUB_ENV
-      - name: Test wheel
-        shell: bash
-        run: |
-          python -m pip install ./wheelhouse/*.whl
-          cd tests
-          python -m unittest discover
+          CIBW_TEST_COMMAND: python -m unittest discover -v -s {package}/tests
+          CIBW_TEST_COMMAND_LINUX: QT_QPA_PLATFORM=minimal:enable_fonts python -m unittest discover -v -s {package}/tests
       - name: Upload artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
