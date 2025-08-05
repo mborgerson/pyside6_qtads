@@ -38,10 +38,10 @@ jobs:
             pyside_ver: ${{ needs.build_src.outputs.rel0 }}
             wheel: cp39-win_amd64
             arch: x86_64
-          - os: windows-11-arm
-            pyside_ver: ${{ needs.build_src.outputs.rel0 }}
-            wheel: cp39-win_arm64
-            arch: arm64
+          # - os: windows-11-arm
+          #   pyside_ver: ${{ needs.build_src.outputs.rel0 }}
+          #   wheel: cp39-win_arm64
+          #   arch: arm64
           - os: ubuntu-latest
             pyside_ver: ${{ needs.build_src.outputs.rel0 }}
             wheel: cp39-manylinux_x86_64
