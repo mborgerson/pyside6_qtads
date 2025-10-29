@@ -104,16 +104,29 @@ macro(pyside_config option output_var)
     endif()
 endmacro()
 
-# Query for the shiboken generator path, Python path, include paths and linker flags.
+# Query for the shiboken6-generator path, PySide6 path, Python path, include paths and linker flags.
 pyside_config(--shiboken-module-path shiboken_module_path)
 pyside_config(--shiboken-generator-path shiboken_generator_path)
 pyside_config(--pyside-path pyside_path)
-pyside_config(--pyside-include-path pyside_include_dir 1)
+
 pyside_config(--python-include-path python_include_dir)
-pyside_config(--shiboken-generator-include-path shiboken_include_dir 1)
-pyside_config(--shiboken-module-shared-libraries-cmake shiboken_shared_libraries 0)
+pyside_config(--shiboken-include-path shiboken_include_dir 1)
+pyside_config(--pyside-include-path pyside_include_dir 1)
+
 pyside_config(--python-link-flags-cmake python_linking_data 0)
+pyside_config(--shiboken-module-shared-libraries-cmake shiboken_module_shared_libraries 0)
 pyside_config(--pyside-shared-libraries-cmake pyside_shared_libraries 0)
+
+# Print the computed variables
+message(STATUS "Shiboken module path: ${shiboken_module_path}")
+message(STATUS "Shiboken generator path: ${shiboken_generator_path}")
+message(STATUS "PySide path: ${pyside_path}")
+message(STATUS "Python include path: ${python_include_dir}")
+message(STATUS "Shiboken include path: ${shiboken_include_dir}")
+message(STATUS "PySide include path: ${pyside_include_dir}")
+message(STATUS "Python linking data: ${python_linking_data}")
+message(STATUS "Shiboken module shared libraries: ${shiboken_module_shared_libraries}")
+message(STATUS "PySide shared libraries: ${pyside_shared_libraries}")
 
 set(shiboken_path "${shiboken_generator_path}/shiboken6${CMAKE_EXECUTABLE_SUFFIX}")
 if(NOT EXISTS ${shiboken_path})
@@ -233,7 +246,7 @@ target_include_directories(${bindings_library} PRIVATE "${CMAKE_SOURCE_DIR}/src"
 target_link_libraries(${bindings_library} PRIVATE Qt6::Widgets)
 target_link_libraries(${bindings_library} PRIVATE ${project_library})
 target_link_libraries(${bindings_library} PRIVATE ${pyside_shared_libraries})
-target_link_libraries(${bindings_library} PRIVATE ${shiboken_shared_libraries})
+target_link_libraries(${bindings_library} PRIVATE ${shiboken_module_shared_libraries})
 
 target_compile_options(qtadvanceddocking-qt6 PRIVATE -Og -fPIC)
 target_compile_options(${bindings_library} PRIVATE -Og -fPIC)

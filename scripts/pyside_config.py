@@ -1,5 +1,6 @@
 # Copyright (C) 2022 The Qt Company Ltd.
 # SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+from __future__ import annotations
 
 import sysconfig
 from enum import Enum
@@ -48,10 +49,10 @@ options.append(("--python-include-path",
                 lambda: get_python_include_path(),
                 python_include_error,
                 "Print Python include path"))
-options.append(("--shiboken-generator-include-path",
-                lambda: get_package_include_path(Package.SHIBOKEN_GENERATOR),
+options.append(("--shiboken-include-path",
+                lambda: get_package_include_path(Package.SHIBOKEN_MODULE),
                 pyside_error,
-                "Print shiboken generator include paths"))
+                "Print shiboken module include paths"))
 options.append(("--pyside-include-path",
                 lambda: get_package_include_path(Package.PYSIDE_MODULE),
                 pyside_error,
@@ -78,10 +79,12 @@ options.append(("--shiboken-module-shared-libraries-cmake",
 
 options.append(("--pyside-shared-libraries-qmake",
                 lambda: get_shared_libraries_qmake(Package.PYSIDE_MODULE), pyside_libs_error,
-                "Print paths of f{PYSIDE_MODULE} shared libraries (.so's, .dylib's, .dll's) for qmake"))
+                "Print paths of f{PYSIDE_MODULE} shared libraries (.so's, .dylib's, .dll's) "
+                "for qmake"))
 options.append(("--pyside-shared-libraries-cmake",
                 lambda: get_shared_libraries_cmake(Package.PYSIDE_MODULE), pyside_libs_error,
-                f"Print paths of {PYSIDE_MODULE} shared libraries (.so's, .dylib's, .dll's) for cmake"))
+                f"Print paths of {PYSIDE_MODULE} shared libraries (.so's, .dylib's, .dll's) "
+                "for cmake"))
 
 options_usage = ''
 for i, (flag, _, _, description) in enumerate(options):
@@ -153,11 +156,11 @@ def link_option(lib):
     # libraries when compiling the project
     baseName = os.path.basename(lib)
     link = ' -l'
-    if sys.platform in ['linux', 'linux2']: # Linux: 'libfoo.so' -> '/absolute/path/libfoo.so'
+    if sys.platform in ['linux', 'linux2']:  # Linux: 'libfoo.so' -> '/absolute/path/libfoo.so'
         link = lib
-    elif sys.platform in ['darwin']: # Darwin: 'libfoo.so' -> '-lfoo'
+    elif sys.platform in ['darwin']:  # Darwin: 'libfoo.so' -> '-lfoo'
         link += os.path.splitext(baseName[3:])[0]
-    else: # Windows: 'libfoo.dll' -> 'libfoo.dll'
+    else:  # Windows: 'libfoo.dll' -> 'libfoo.dll'
         link += os.path.splitext(baseName)[0]
     return link
 
@@ -194,13 +197,16 @@ def find_package_path(dir_name):
     return None
 
 
-# Return version as "3.6"
+# Return version as "x.y" (e.g. 3.9, 3.12, etc)
 def python_version():
     return str(sys.version_info[0]) + '.' + str(sys.version_info[1])
 
 
 def get_python_include_path():
-    return sysconfig.get_path('include')
+    if sys.platform == 'win32':
+        return sysconfig.get_path('include')
+    else:
+        return sysconfig.get_path('include', scheme="posix_prefix")
 
 
 def python_link_flags_qmake():
@@ -212,7 +218,7 @@ def python_link_flags_qmake():
         # e.g.: "Program Files" to "Progra~1"
         for d in libdir.split("\\"):
             if " " in d:
-                libdir = libdir.replace(d, d.split(" ")[0][:-1]+"~1")
+                libdir = libdir.replace(d, d.split(" ")[0][:-1] + "~1")
         lib_flags = flags['lib']
         return f'-L{libdir} -l{lib_flags}'
     elif sys.platform == 'darwin':
