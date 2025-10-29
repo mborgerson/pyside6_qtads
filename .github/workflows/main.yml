@@ -128,12 +128,12 @@ jobs:
             && python3 -m aqt install-qt windows desktop ${{ env.QT_VERSION }} win64_msvc2022_64 --outputdir ${{ env.QT_BASE_DIR }} --base http://mirrors.ocf.berkeley.edu/qt/
             && python3 -m aqt install-qt windows desktop ${{ env.QT_VERSION }} win64_msvc2022_arm64_cross_compiled --outputdir ${{ env.QT_BASE_DIR }} --base http://mirrors.ocf.berkeley.edu/qt/
             && python3 ./scripts/set-qt-constraint.py ${{ matrix.pyside_ver }}
-          CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28
+          CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_34
           CIBW_ARCHS_MACOS: x86_64 arm64
           CIBW_BUILD_VERBOSITY: 3
           CIBW_BUILD: ${{ matrix.wheel }}
           CIBW_REPAIR_WHEEL_COMMAND_LINUX: >
-            python ./scripts/custom-auditwheel.py repair -w {dest_dir} --only-plat --plat manylinux_2_28_x86_64 {wheel}
+            python ./scripts/custom-auditwheel.py repair -w {dest_dir} --only-plat --plat manylinux_2_34_x86_64 {wheel}
           CIBW_REPAIR_WHEEL_COMMAND_MACOS:
           CIBW_REPAIR_WHEEL_COMMAND_WINDOWS:
           CIBW_TEST_COMMAND: python -m unittest discover -v -s {package}/tests
