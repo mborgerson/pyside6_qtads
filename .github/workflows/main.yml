@@ -47,7 +47,7 @@ jobs:
             pyside_ver: ${{ needs.build_src.outputs.rel0 }}
             wheel: cp39-manylinux_x86_64
             arch: x86_64
-          - os: macos-13
+          - os: macos-15-intel
             pyside_ver: ${{ needs.build_src.outputs.rel0 }}
             wheel: cp39-macosx_x86_64
             arch: x86_64
