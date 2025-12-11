@@ -125,7 +125,6 @@ jobs:
           CIBW_BEFORE_BUILD_WINDOWS: >
             python3 -m pip install "aqtinstall!=3.2.1"
             && python3 -m aqt install-qt windows desktop ${{ env.QT_VERSION }} win64_msvc2022_64 --outputdir ${{ env.QT_BASE_DIR }} --base http://mirrors.ocf.berkeley.edu/qt/
-            && python3 -m aqt install-qt windows desktop ${{ env.QT_VERSION }} win64_msvc2022_arm64_cross_compiled --outputdir ${{ env.QT_BASE_DIR }} --base http://mirrors.ocf.berkeley.edu/qt/
             && python3 ./scripts/set-qt-constraint.py ${{ matrix.pyside_ver }}
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_34
           CIBW_ARCHS_MACOS: x86_64 arm64
