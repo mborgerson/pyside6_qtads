@@ -4,9 +4,9 @@
 
 Python/PySide6 bindings to the [Qt Advanced Docking System](https://github.com/githubuser0xFFFF/Qt-Advanced-Docking-System) library.
 
-Pre-built wheels are available for Windows, macOS, and Linux. You can install with:
+Install with:
 
-```
+```bash
 pip install PySide6-QtAds
 ```
 
