@@ -39,10 +39,10 @@ jobs:
             pyside_ver: ${{ needs.build_src.outputs.rel0 }}
             wheel: cp39-win_amd64
             arch: x86_64
-          # - os: windows-11-arm
-          #   pyside_ver: ${{ needs.build_src.outputs.rel0 }}
-          #   wheel: cp39-win_arm64
-          #   arch: arm64
+          - os: windows-11-arm
+            pyside_ver: ${{ needs.build_src.outputs.rel0 }}
+            wheel: cp39-win_arm64
+            arch: arm64
           - os: ubuntu-latest
             pyside_ver: ${{ needs.build_src.outputs.rel0 }}
             wheel: cp39-manylinux_x86_64
@@ -70,11 +70,18 @@ jobs:
           if [[ "$RUNNER_OS" == "Windows" ]]; then
             QT_BASE_DIR=${GITHUB_WORKSPACE}\\Qt
             if [[ "${{ matrix.arch }}" == "arm64" ]]; then
-              echo "QT_HOST_PATH=$QT_BASE_DIR\\$QT_VERSION\\msvc2022_64" >> $GITHUB_ENV
               QT6_DIR=$QT_BASE_DIR\\$QT_VERSION\\msvc2022_arm64
+              QT_PLATFORM=windows_arm64
+              QT_ARCH=win64_msvc2022_arm64
             else
               QT6_DIR=$QT_BASE_DIR\\$QT_VERSION\\msvc2022_64
+              QT_PLATFORM=windows
+              QT_ARCH=win64_msvc2022_64
             fi
+            echo "QT_PLATFORM=$QT_PLATFORM" >> $GITHUB_ENV
+            echo "QT_ARCH=$QT_ARCH" >> $GITHUB_ENV
+            echo "CC=cl.exe" >> $GITHUB_ENV
+            echo "CXX=cl.exe" >> $GITHUB_ENV
           elif [[ "$RUNNER_OS" == "macOS" ]]; then
             QT_BASE_DIR=${GITHUB_WORKSPACE}/Qt
             QT6_DIR=$QT_BASE_DIR/$QT_VERSION/macos
@@ -93,6 +100,14 @@ jobs:
         if: runner.os == 'Windows'
         with:
           arch: ${{ matrix.arch }}
+      # XXX: Install headers compatible with shiboken's older libclang
+      #   C:\llvm\lib\clang\20\include\arm_vector_types.h:20:9: error: unknown type name '__mfp8'
+      - name: Install LLVM and Clang
+        if: matrix.os == 'windows-11-arm'
+        uses: KyleMayes/install-llvm-action@98e68e10c96dffcb7bfed8b2144541a66b49aa02 # v2
+        with:
+          version: "19"
+          directory: "C:\\llvm"
       - name: Build wheels
         uses: pypa/cibuildwheel@63fd63b352a9a8bdcc24791c9dbee952ee9a8abc # v3.3.0
         with:
@@ -110,6 +125,7 @@ jobs:
             PIP_EXTRA_INDEX_URL=https://download.qt.io/official_releases/QtForPython/
             VERBOSE=1
           CIBW_ENVIRONMENT_WINDOWS: >
+            CLANG_INSTALL_DIR="${LLVM_PATH}"
             CMAKE_PREFIX_PATH="${QT6_DIR}\\lib\\cmake"
             PIP_EXTRA_INDEX_URL=https://download.qt.io/official_releases/QtForPython/
             VERBOSE=1
@@ -124,7 +140,7 @@ jobs:
             && python3 ./scripts/set-qt-constraint.py ${{ matrix.pyside_ver }}
           CIBW_BEFORE_BUILD_WINDOWS: >
             python3 -m pip install "aqtinstall!=3.2.1"
-            && python3 -m aqt install-qt windows desktop ${{ env.QT_VERSION }} win64_msvc2022_64 --outputdir ${{ env.QT_BASE_DIR }} --base http://mirrors.ocf.berkeley.edu/qt/
+            && python3 -m aqt install-qt ${{ env.QT_PLATFORM }} desktop ${{ env.QT_VERSION }} ${{ env.QT_ARCH }} --outputdir ${{ env.QT_BASE_DIR }} --base http://mirrors.ocf.berkeley.edu/qt/
             && python3 ./scripts/set-qt-constraint.py ${{ matrix.pyside_ver }}
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_34
           CIBW_ARCHS_MACOS: x86_64 arm64
