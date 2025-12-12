@@ -20,11 +20,8 @@ aqt install-qt linux desktop 6.10.0 --outputdir qt
 # Build PySide6-QtAds
 LD_LIBRARY_PATH=$PWD/qt/6.10.0/gcc_64/lib \
 CMAKE_PREFIX_PATH=$PWD/qt/6.10.0/gcc_64/lib/cmake/ \
-PIP_EXTRA_INDEX_URL=https://download.qt.io/official_releases/QtForPython/ \
 pip install -v .
 ```
-
-Note: `shiboken6-generator` is required when building from source. It will be downloaded automatically in the command above from Qt's package index, as it is not available on PyPI.
 
 # Examples
 https://github.com/mborgerson/Qt-Advanced-Docking-System/tree/pyside6
