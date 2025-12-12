@@ -16,7 +16,6 @@ jobs:
           echo "rel0=$(curl -s https://pypi.org/pypi/PySide6/json | jq -r .info.version)" >> $GITHUB_OUTPUT
       - name: Build sdist
         env:
-          PIP_EXTRA_INDEX_URL: https://download.qt.io/official_releases/QtForPython/
           PYSIDE6_QTADS_NO_HARD_PYSIDE_REQUIREMENT: 1
         run: |
           python -m pip install --user build
@@ -116,18 +115,15 @@ jobs:
           CIBW_ENVIRONMENT_LINUX: >
             CMAKE_PREFIX_PATH=${{ env.QT6_DIR }}/lib/cmake
             LD_LIBRARY_PATH=${{ env.QT6_DIR }}/lib
-            PIP_EXTRA_INDEX_URL=https://download.qt.io/official_releases/QtForPython/
             VERBOSE=1
           CIBW_ENVIRONMENT_MACOS: >
             MACOSX_DEPLOYMENT_TARGET=13.0
             CMAKE_OSX_ARCHITECTURES=${{ matrix.arch }}
             CMAKE_PREFIX_PATH=${QT6_DIR}/lib/cmake
-            PIP_EXTRA_INDEX_URL=https://download.qt.io/official_releases/QtForPython/
             VERBOSE=1
           CIBW_ENVIRONMENT_WINDOWS: >
             CLANG_INSTALL_DIR="${LLVM_PATH}"
             CMAKE_PREFIX_PATH="${QT6_DIR}\\lib\\cmake"
-            PIP_EXTRA_INDEX_URL=https://download.qt.io/official_releases/QtForPython/
             VERBOSE=1
           CIBW_BEFORE_BUILD_LINUX: >
             yum install -y mesa-libGL libxslt llvm clang clang-devel libxkbcommon-devel
@@ -207,7 +203,6 @@ jobs:
         env:
           LD_LIBRARY_PATH: ${{ github.workspace }}/qt/${{ env.QT_VERSION }}/gcc_arm64/lib
           CMAKE_PREFIX_PATH: ${{ github.workspace }}/qt/${{ env.QT_VERSION }}/gcc_arm64/lib/cmake
-          PIP_EXTRA_INDEX_URL: https://download.qt.io/official_releases/QtForPython/
         run: uv build --verbose --wheel .
       - name: Fixup wheel
         env:
