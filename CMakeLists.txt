@@ -30,6 +30,7 @@ set(CMAKE_CXX_STANDARD 11)
 # The C++ project library for which we will create bindings.
 set(qtads_subdir "Qt-Advanced-Docking-System")
 set(qtads_dir ${CMAKE_CURRENT_SOURCE_DIR}/${qtads_subdir})
+set(CMAKE_MODULE_PATH ${qtads_dir}/cmake/modules ${CMAKE_MODULE_PATH})
 add_subdirectory(${qtads_subdir} EXCLUDE_FROM_ALL)
 set(project_library "qtadvanceddocking-qt6")
 
