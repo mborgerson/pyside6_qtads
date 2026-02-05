@@ -12,7 +12,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "PySide6-QtAds"
-version = "4.5.0.2"
+version = "4.5.0.3.dev0"
 description = "PySide6 bindings to Qt Advanced Docking System"
 license = { file = "LICENSE.txt" }
 readme = { file = "README.md", content-type = "text/markdown" }
