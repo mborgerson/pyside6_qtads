@@ -15,11 +15,11 @@ You may also build from source. Example build from source on Ubuntu 24.04:
 ```bash
 # Install Qt (for example, using aqtinstall)
 pip install aqtinstall
-aqt install-qt linux desktop 6.10.1 --outputdir qt
+aqt install-qt linux desktop 6.10.2 --outputdir qt
 
 # Build PySide6-QtAds
-LD_LIBRARY_PATH=$PWD/qt/6.10.1/gcc_64/lib \
-CMAKE_PREFIX_PATH=$PWD/qt/6.10.1/gcc_64/lib/cmake/ \
+LD_LIBRARY_PATH=$PWD/qt/6.10.2/gcc_64/lib \
+CMAKE_PREFIX_PATH=$PWD/qt/6.10.2/gcc_64/lib/cmake/ \
 pip install -v .
 ```
 
