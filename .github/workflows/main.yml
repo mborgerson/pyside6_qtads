@@ -188,7 +188,7 @@ jobs:
                   python3-pip \
                   libxkbcommon-dev
       - name: Install uv
-        uses: astral-sh/setup-uv@803947b9bd8e9f986429fa0c5a41c367cd732b41 # v6
+        uses: astral-sh/setup-uv@eac588ad8def6316056a12d4907a9d4d84ff7a3b # v6
         with:
           python-version: "3.9"
           activate-environment: true
