@@ -134,8 +134,9 @@ jobs:
             python3 -m pip install "aqtinstall!=3.2.1"
             && python3 -m aqt install-qt mac desktop ${{ env.QT_VERSION }} --outputdir ${{ env.QT_BASE_DIR }} --base http://mirrors.ocf.berkeley.edu/qt/
             && python3 ./scripts/set-qt-constraint.py ${{ matrix.pyside_ver }}
+          # Installing aqtinstall from Git for https://github.com/miurahr/aqtinstall/pull/1000
           CIBW_BEFORE_BUILD_WINDOWS: >
-            python3 -m pip install "aqtinstall!=3.2.1"
+            python3 -m pip install git+https://github.com/miurahr/aqtinstall.git
             && python3 -m aqt install-qt ${{ env.QT_PLATFORM }} desktop ${{ env.QT_VERSION }} ${{ env.QT_ARCH }} --outputdir ${{ env.QT_BASE_DIR }} --base http://mirrors.ocf.berkeley.edu/qt/
             && python3 ./scripts/set-qt-constraint.py ${{ matrix.pyside_ver }}
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_34
