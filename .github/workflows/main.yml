@@ -36,23 +36,23 @@ jobs:
         include:
           - os: windows-latest
             pyside_ver: ${{ needs.build_src.outputs.rel0 }}
-            wheel: cp39-win_amd64
+            wheel: cp310-win_amd64
             arch: x86_64
           - os: windows-11-arm
             pyside_ver: ${{ needs.build_src.outputs.rel0 }}
-            wheel: cp39-win_arm64
+            wheel: cp310-win_arm64
             arch: arm64
           - os: ubuntu-latest
             pyside_ver: ${{ needs.build_src.outputs.rel0 }}
-            wheel: cp39-manylinux_x86_64
+            wheel: cp310-manylinux_x86_64
             arch: x86_64
           - os: macos-15-intel
             pyside_ver: ${{ needs.build_src.outputs.rel0 }}
-            wheel: cp39-macosx_x86_64
+            wheel: cp310-macosx_x86_64
             arch: x86_64
           - os: macos-latest
             pyside_ver: ${{ needs.build_src.outputs.rel0 }}
-            wheel: cp39-macosx_arm64
+            wheel: cp310-macosx_arm64
             arch: arm64
     steps:
       - name: Download sdist
@@ -162,7 +162,7 @@ jobs:
         include:
           - os: ubuntu-24.04-arm
             pyside_ver: ${{ needs.build_src.outputs.rel0 }}
-            wheel: cp39-manylinux_aarch64
+            wheel: cp310-manylinux_aarch64
             arch: aarch64
     runs-on: ${{ matrix.os }}
     steps:
@@ -190,7 +190,7 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v6
         with:
-          python-version: "3.9"
+          python-version: "3.10"
           activate-environment: true
       - name: Install Python dependencies
         run: uv pip install "aqtinstall!=3.2.1" PySide6 auditwheel
