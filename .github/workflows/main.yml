@@ -1,19 +1,20 @@
 on: [push, pull_request]
+env:
+  PYSIDE_VERSION: "6.11.0"
 jobs:
   build_src:
     name: Build sdist
     runs-on: ubuntu-latest
     outputs:
-      rel0: ${{ steps.query.outputs.rel0 }}
+      pyside_ver: ${{ steps.version.outputs.pyside_ver }}
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
         with:
           submodules: recursive
-      - name: Query PyPI for recent PySide release number
-        id: query
-        run: |
-          echo "rel0=$(curl -s https://pypi.org/pypi/PySide6/json | jq -r .info.version)" >> $GITHUB_OUTPUT
+      - name: Set PySide version
+        id: version
+        run: echo "pyside_ver=$PYSIDE_VERSION" >> $GITHUB_OUTPUT
       - name: Build sdist
         env:
           PYSIDE6_QTADS_NO_HARD_PYSIDE_REQUIREMENT: 1
@@ -35,23 +36,23 @@ jobs:
       matrix:
         include:
           - os: windows-latest
-            pyside_ver: ${{ needs.build_src.outputs.rel0 }}
+            pyside_ver: ${{ needs.build_src.outputs.pyside_ver }}
             wheel: cp310-win_amd64
             arch: x86_64
           - os: windows-11-arm
-            pyside_ver: ${{ needs.build_src.outputs.rel0 }}
+            pyside_ver: ${{ needs.build_src.outputs.pyside_ver }}
             wheel: cp310-win_arm64
             arch: arm64
           - os: ubuntu-latest
-            pyside_ver: ${{ needs.build_src.outputs.rel0 }}
+            pyside_ver: ${{ needs.build_src.outputs.pyside_ver }}
             wheel: cp310-manylinux_x86_64
             arch: x86_64
           - os: macos-15-intel
-            pyside_ver: ${{ needs.build_src.outputs.rel0 }}
+            pyside_ver: ${{ needs.build_src.outputs.pyside_ver }}
             wheel: cp310-macosx_x86_64
             arch: x86_64
           - os: macos-latest
-            pyside_ver: ${{ needs.build_src.outputs.rel0 }}
+            pyside_ver: ${{ needs.build_src.outputs.pyside_ver }}
             wheel: cp310-macosx_arm64
             arch: arm64
     steps:
@@ -162,7 +163,7 @@ jobs:
       matrix:
         include:
           - os: ubuntu-24.04-arm
-            pyside_ver: ${{ needs.build_src.outputs.rel0 }}
+            pyside_ver: ${{ needs.build_src.outputs.pyside_ver }}
             wheel: cp310-manylinux_aarch64
             arch: aarch64
     runs-on: ${{ matrix.os }}
