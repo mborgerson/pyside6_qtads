@@ -1,0 +1,50 @@
+name: Bump PySide6 version
+on:
+  schedule:
+    - cron: "0 12 * * *" # Daily at noon UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
+      - name: Check for new PySide6 version
+        id: check
+        run: |
+          CURRENT=$(cat .pyside-version)
+          LATEST=$(curl -s https://pypi.org/pypi/PySide6/json | jq -r .info.version)
+          echo "current=$CURRENT" >> $GITHUB_OUTPUT
+          echo "latest=$LATEST" >> $GITHUB_OUTPUT
+          if [ "$CURRENT" != "$LATEST" ]; then
+            echo "needs_bump=true" >> $GITHUB_OUTPUT
+          fi
+      - name: Check for existing PR
+        if: steps.check.outputs.needs_bump == 'true'
+        id: existing
+        run: |
+          if gh pr list --head "bump-pyside-${{ steps.check.outputs.latest }}" --json number --jq '.[0].number' | grep -q .; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          fi
+      - name: Update version and create PR
+        if: steps.check.outputs.needs_bump == 'true' && steps.existing.outputs.exists != 'true'
+        run: |
+          BRANCH="bump-pyside-${{ steps.check.outputs.latest }}"
+          git checkout -b "$BRANCH"
+          echo "${{ steps.check.outputs.latest }}" > .pyside-version
+          git add .pyside-version
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "ci: Bump PySide6 to ${{ steps.check.outputs.latest }}"
+          git push -u origin "$BRANCH"
+          gh pr create \
+            --title "ci: Bump PySide6 to ${{ steps.check.outputs.latest }}" \
+            --body "Automated bump from ${{ steps.check.outputs.current }} to ${{ steps.check.outputs.latest }}.
+
+          https://pypi.org/project/PySide6/${{ steps.check.outputs.latest }}/"
