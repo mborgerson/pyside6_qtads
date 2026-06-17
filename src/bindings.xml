@@ -282,6 +282,9 @@
                     <parent index="this" action="add"/>
                 </modify-argument>
             </modify-function>
+            <!-- splitterSizes/setSplitterSizes use QList<int> which causes non-abi3 symbols -->
+            <modify-function signature="splitterSizes(ads::CDockAreaWidget*)const" remove="all"/>
+            <modify-function signature="setSplitterSizes(ads::CDockAreaWidget*,const QList&lt;int&gt;&amp;)" remove="all"/>
         </object-type>
 
         <object-type name="CDockOverlay">
