@@ -17,6 +17,12 @@
     <load-typesystem name="typesystem_widgets.xml" generate="no"/>
     <load-typesystem name="typesystem_gui.xml" generate="no"/>
 
+    <!-- Reject methods using QList<int> to prevent Shiboken from generating
+         PythonToQVariantQIntList/PythonToCppQIntList converter symbols, which
+         abi3audit incorrectly flags as non-abi3 due to "Py" prefix heuristic. -->
+    <rejection class="CDockManager" function-name="splitterSizes"/>
+    <rejection class="CDockManager" function-name="setSplitterSizes"/>
+
     <namespace-type name="ads">
         <enum-type name="DockWidgetArea" flags="DockWidgetAreas" />
         <enum-type name="TitleBarButton" />
@@ -282,9 +288,7 @@
                     <parent index="this" action="add"/>
                 </modify-argument>
             </modify-function>
-            <!-- splitterSizes/setSplitterSizes use QList<int> which causes non-abi3 symbols -->
-            <modify-function signature="splitterSizes(ads::CDockAreaWidget*)const" remove="all"/>
-            <modify-function signature="setSplitterSizes(ads::CDockAreaWidget*,const QList&lt;int&gt;&amp;)" remove="all"/>
+
         </object-type>
 
         <object-type name="CDockOverlay">
