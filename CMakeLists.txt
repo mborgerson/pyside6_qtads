@@ -268,6 +268,32 @@ if(APPLE)
   set_target_properties(${bindings_library} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)
 
+# Restrict the module's exported symbols to its init function only.
+#
+# shiboken emits the converters for opaque containers such as QList<int>
+# (named e.g. PythonToCppQIntList / PythonToQVariantQIntList) with *external*
+# linkage, so they leak into the dynamic symbol table. abi3audit -- run by
+# cibuildwheel >= 4 against abi3 wheels -- flags any exported "Py"-prefixed
+# symbol that isn't part of the limited API, and these "Python..." converters
+# match that heuristic, failing the ABI3 compatibility check. A Python
+# extension module only needs to export PyInit_<module>, so hide everything
+# else. This also avoids cross-module symbol collisions.
+if(WIN32)
+    # Windows only exports symbols marked dllexport (PyMODINIT_FUNC handles the
+    # init function), so nothing leaks here.
+elseif(APPLE)
+    set(exported_symbols_list "${CMAKE_CURRENT_BINARY_DIR}/exported_symbols.list")
+    file(WRITE "${exported_symbols_list}" "_PyInit_${bindings_library}\n")
+    target_link_options(${bindings_library} PRIVATE
+        "LINKER:-exported_symbols_list,${exported_symbols_list}")
+else()
+    set(version_script "${CMAKE_CURRENT_BINARY_DIR}/exports.map")
+    file(WRITE "${version_script}"
+         "{ global: PyInit_${bindings_library}; local: *; };\n")
+    target_link_options(${bindings_library} PRIVATE
+        "LINKER:--version-script=${version_script}")
+endif()
+
 if (WIN32)
     list(GET python_linking_data 0 python_libdir)
     target_link_directories(${bindings_library} PRIVATE ${python_libdir})
