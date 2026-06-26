@@ -86,7 +86,7 @@ setuptools.setup(
             cmake_configure_options=[
                 "-DBUILD_EXAMPLES:BOOL=OFF",
                 "-DBUILD_STATIC:BOOL=ON",
-                "-DADS_VERSION=4.5.0",
+                "-DADS_VERSION=5.0.0",
                 f"-DPython3_ROOT_DIR={Path(sys.prefix)}",
                 f"-DPython_EXECUTABLE={Path(sys.executable)}"
             ],
