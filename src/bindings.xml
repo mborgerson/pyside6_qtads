@@ -200,6 +200,7 @@
             <enum-type name="eConfigFlag" flags="ConfigFlags" />
             <enum-type name="eAutoHideFlag" flags="AutoHideFlags" />
             <enum-type name="eConfigParam" flags="ConfigParam" />
+            <enum-type name="ColorSchemeMode" />
 
             <modify-function signature="registerFloatingWidget(ads::CFloatingDockContainer*)">
                 <modify-argument index="1">
