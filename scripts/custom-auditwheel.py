@@ -46,6 +46,7 @@ if __name__ == "__main__":
                 'libOpenGL.so.0',
                 'libQt6Core.so.6',
                 'libxcb.so.1',
+                'libxkbcommon.so.0',
             ])
         fname = tmppath / (libc.name + "-policy.json")
         with open(fname, "w") as f:
