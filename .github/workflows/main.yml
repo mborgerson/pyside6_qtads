@@ -194,6 +194,12 @@ jobs:
           activate-environment: true
       - name: Install Python dependencies
         run: uv pip install "aqtinstall!=3.2.1" PySide6 auditwheel
+      # XXX: Patch aqtinstall for https://github.com/miurahr/aqtinstall/pull/1053
+      #   .7z archives misdetected as zip -> BadZipFile on linux_arm64
+      - name: Patch aqtinstall
+        run: |
+          AQT_SITE=$(python -c 'import aqt, os; print(os.path.dirname(os.path.dirname(aqt.__file__)))')
+          patch -p1 -d "$AQT_SITE" < scripts/aqtinstall-pr1053.patch
       - name: Setup Qt vars
         shell: bash
         run: echo QT_VERSION=$(echo ${{ matrix.pyside_ver }} | cut -d. -f-3) >> $GITHUB_ENV

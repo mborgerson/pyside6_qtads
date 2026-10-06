@@ -1,0 +1,40 @@
+diff --git a/aqt/installer.py b/aqt/installer.py
+index c32fadf1..f168dec3 100644
+--- a/aqt/installer.py
++++ b/aqt/installer.py
+@@ -1629,6 +1629,26 @@ def init_worker_sh() -> None:
+     signal.signal(signal.SIGINT, signal.SIG_IGN)
+ 
+ 
++
++def _is_extractable_zip(archive: Path) -> bool:
++    """Return True if *archive* should be opened with ``zipfile``.
++
++    Some Qt ``.7z`` packages false-positive ``zipfile.is_zipfile`` on CPython
++    before 3.14 (python/cpython#72680). Prefer an explicit ``.7z`` suffix or
++    the 7z magic header over ``is_zipfile`` so extraction uses py7zr/external
++    7z instead of raising ``BadZipFile`` (see #1042).
++    """
++    if archive.suffix.lower() == ".7z":
++        return False
++    try:
++        with open(archive, "rb") as fh:
++            if fh.read(6) == b"7z\xbc\xaf\x27\x1c":
++                return False
++    except OSError:
++        pass
++    return zipfile.is_zipfile(archive)
++
++
+ def installer(
+     qt_package: QtPackage,
+     base_dir: str,
+@@ -1681,7 +1701,7 @@ def download_bin(_base_url):
+                 # remove this when the minimum Python version is 3.12
+                 logger.warning("Extracting may be unsafe; consider updating Python to 3.11.4 or greater")
+                 tar_archive.extractall(path=base_dir)
+-    elif zipfile.is_zipfile(archive):
++    elif _is_extractable_zip(archive):
+         with zipfile.ZipFile(archive) as zip_archive:
+             zip_archive.extractall(path=base_dir)
+     elif command is None:
