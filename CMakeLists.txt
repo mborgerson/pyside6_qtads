@@ -212,6 +212,7 @@ set(shiboken_options --generator-set=shiboken --enable-parent-ctor-heuristic
     ${QT_INCLUDES}
     ${implicit_includes}
     -I${qtads_dir}/src
+    -I${CMAKE_CURRENT_BINARY_DIR}/${qtads_subdir}/src
     -T${CMAKE_CURRENT_SOURCE_DIR}
     -T${pyside_path}/typesystems
     --output-directory=${CMAKE_CURRENT_BINARY_DIR}
