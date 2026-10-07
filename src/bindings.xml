@@ -283,6 +283,13 @@
                     <parent index="this" action="add"/>
                 </modify-argument>
             </modify-function>
+            <modify-function signature="setComponentsFactory(ads::CDockComponentsFactory*)">
+                <modify-argument index="1">
+                    <parent index="this" action="add"/>
+                </modify-argument>
+            </modify-function>
+            <modify-function signature="setComponentsFactory(QSharedPointer&lt;ads::CDockComponentsFactory&gt;)" remove="all"/>
+            <modify-function signature="componentsFactory() const" remove="all"/>            
         </object-type>
 
         <object-type name="CDockOverlay">
