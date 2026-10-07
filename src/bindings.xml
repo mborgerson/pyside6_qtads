@@ -92,23 +92,23 @@
 
         <object-type name="CDockComponentsFactory">
             <modify-function signature="createDockWidgetTab(ads::CDockWidget*) const">
-                <modify-argument index="1">
-                    <parent index="this" action="add"/>
+                <modify-argument index="return">
+                    <define-ownership owner="c++"/>
                 </modify-argument>
             </modify-function>
             <modify-function signature="createDockWidgetSideTab(ads::CDockWidget*) const">
-                <modify-argument index="1">
-                    <parent index="this" action="add"/>
+                <modify-argument index="return">
+                    <define-ownership owner="c++"/>
                 </modify-argument>
             </modify-function>
             <modify-function signature="createDockAreaTabBar(ads::CDockAreaWidget*) const">
-                <modify-argument index="1">
-                    <parent index="this" action="add"/>
+                <modify-argument index="return">
+                    <define-ownership owner="c++"/>
                 </modify-argument>
             </modify-function>
             <modify-function signature="createDockAreaTitleBar(ads::CDockAreaWidget*) const">
-                <modify-argument index="1">
-                    <parent index="this" action="add"/>
+                <modify-argument index="return">
+                    <define-ownership owner="c++"/>
                 </modify-argument>
             </modify-function>
             <modify-function signature="setFactory(ads::CDockComponentsFactory*)">
