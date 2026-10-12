@@ -270,6 +270,10 @@ def get_package_include_path(which_package):
         return None
 
     includes = f"{package_path}/include"
+    shiboken_header = f"{includes}/shiboken6/shiboken.h"
+    if (which_package == Package.SHIBOKEN_MODULE
+            and os.path.isfile(shiboken_header)):
+        includes = f"{includes}/shiboken6"
 
     return includes
 

@@ -195,6 +195,12 @@ foreach(INCLUDE_DIR ${pyside_include_dir})
     list(APPEND pyside_additional_includes "${INCLUDE_DIR}/QtCore")
     list(APPEND pyside_additional_includes "${INCLUDE_DIR}/QtGui")
     list(APPEND pyside_additional_includes "${INCLUDE_DIR}/QtWidgets")
+    if(EXISTS "${INCLUDE_DIR}/PySide6/pysideqobject.h")
+        list(APPEND pyside_additional_includes "${INCLUDE_DIR}/PySide6")
+        list(APPEND pyside_additional_includes "${INCLUDE_DIR}/PySide6/QtCore")
+        list(APPEND pyside_additional_includes "${INCLUDE_DIR}/PySide6/QtGui")
+        list(APPEND pyside_additional_includes "${INCLUDE_DIR}/PySide6/QtWidgets")
+    endif()
 endforeach()
 
 
