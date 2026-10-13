@@ -22,6 +22,17 @@ class TestAutoHideTab(QtAds.ads.CAutoHideTab):
 
 class TestFactory(QtAds.CDockComponentsFactory):
 
+    def createDockWidgetTab(self, DockWidget: QtAds.CDockWidget) -> QtAds.CDockWidgetTab:
+        return TestDockWidgetTab(DockWidget, None)
+
+    def createDockAreaTitleBar(self, DockArea: QtAds.CDockAreaWidget) -> QtAds.CDockAreaTitleBar:
+        return TestDockAreaTitleBar(DockArea)
+
+    def createDockWidgetSideTab(self, DockWidget: QtAds.CDockWidget) -> QtAds.ads.CAutoHideTab:
+        return TestAutoHideTab(DockWidget)
+    
+class TestFactoryThatKeepsRef(QtAds.CDockComponentsFactory):
+
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         self._storage: List[Any] = []
@@ -42,18 +53,32 @@ class TestFactory(QtAds.CDockComponentsFactory):
         return sidetab
 
 class TestCDockComponentsFactory(BaseQtTest):
+
+    def test_can_use_factory(self):
+        QtAds.CDockManager.setAutoHideConfigFlags(QtAds.CDockManager.DefaultAutoHideConfig)
+        container = QWidget()
+        dock_manager = QtAds.CDockManager(container)
+        factory = TestFactory()
+        dock_manager.setComponentsFactory(factory)
+        dw1 = QtAds.CDockWidget(dock_manager, "AutoHide")
+        dw1.setWidget(QLabel("Hello"))
+        dw2 = QtAds.CDockWidget(dock_manager, "Tab")
+        dw2.setWidget(QLabel("Hello"))
+        dock_manager.addAutoHideDockWidget(QtAds.SideBarLeft, dw1) 
+        dock_manager.addDockWidgetTab(QtAds.TopDockWidgetArea, dw2)
+        self.app.processEvents()
      
     def test_ownership_transferred(self):
         QtAds.CDockManager.setAutoHideConfigFlags(QtAds.CDockManager.DefaultAutoHideConfig)
         container = QWidget()
         dock_manager = QtAds.CDockManager(container)
 
-        factory = TestFactory()
+        factory = TestFactoryThatKeepsRef()
         self.assertTrue(shiboken6.ownedByPython(factory))
         dock_manager.setComponentsFactory(factory)
         self.assertFalse(shiboken6.ownedByPython(factory))  # Given to QTAds
 
-        dw1 = QtAds.CDockWidget(dock_manager, "AutoHide",)
+        dw1 = QtAds.CDockWidget(dock_manager, "AutoHide")
         dw1.setWidget(QLabel("Hello"))
         dw2 = QtAds.CDockWidget(dock_manager, "Tab")
         dw2.setWidget(QLabel("Hello"))
