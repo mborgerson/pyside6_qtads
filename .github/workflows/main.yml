@@ -20,7 +20,7 @@ jobs:
           python -m pip install --user build
           python -m build --sdist
       - name: Upload artifact
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v4
         with:
           name: source
           path: dist/*.tar.gz
@@ -149,7 +149,7 @@ jobs:
           CIBW_TEST_COMMAND: python -m unittest discover -v -s {package}/tests
           CIBW_TEST_COMMAND_LINUX: QT_QPA_PLATFORM=minimal:enable_fonts python -m unittest discover -v -s {package}/tests
       - name: Upload artifact
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v4
         with:
           name: wheel-${{ matrix.wheel }}
           path: ./wheelhouse/*.whl
@@ -222,7 +222,7 @@ jobs:
           cd tests
           python -m unittest discover
       - name: Upload artifact
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v4
         with:
           name: wheel-${{ matrix.wheel }}
           path: ./dist-repaired/*.whl
