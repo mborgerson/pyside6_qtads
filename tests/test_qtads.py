@@ -1,5 +1,6 @@
 import sys
 import unittest
+from base_qt_test import BaseQtTest
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QApplication, QLabel, QMainWindow, QMenuBar, QMenu, QStatusBar
@@ -40,7 +41,7 @@ class SimpleWindow(QMainWindow):
 
         # Create a dock widget with the title Label 1 and set the created label
         # as the dock widget content
-        dock_widget = QtAds.CDockWidget("Label 1")
+        dock_widget = QtAds.CDockWidget(self.dock_manager, "Label 1")
         dock_widget.setWidget(dock_inner_widget)
 
         # Add the toggleViewAction of the dock widget to the menu to give
@@ -51,14 +52,10 @@ class SimpleWindow(QMainWindow):
         self.dock_manager.addDockWidget(QtAds.TopDockWidgetArea, dock_widget)
 
 
-class TestSimpleWindow(unittest.TestCase):
+class TestSimpleWindow(BaseQtTest):
     """
     Basic QtAds tests.
     """
-
-    @classmethod
-    def setUpClass(cls):
-        cls.app = QApplication(sys.argv)
 
     def setUp(self):
         self.window = SimpleWindow()

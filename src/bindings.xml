@@ -113,7 +113,7 @@
             </modify-function>
             <modify-function signature="setFactory(ads::CDockComponentsFactory*)">
                 <modify-argument index="1">
-                    <define-ownership class="native" owner="c++"/>
+                    <define-ownership class="target" owner="c++"/>
                 </modify-argument>
                 <inject-code>
                     //this function is static we need keep ref to default value, to be able to call python virtual functions
