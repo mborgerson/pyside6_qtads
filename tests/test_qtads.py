@@ -1,9 +1,8 @@
-import sys
 import unittest
 from base_qt_test import BaseQtTest
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QApplication, QLabel, QMainWindow, QMenuBar, QMenu, QStatusBar
+from PySide6.QtWidgets import QLabel, QMainWindow, QMenuBar, QMenu, QStatusBar
 
 import PySide6QtAds as QtAds
 
@@ -58,6 +57,7 @@ class TestSimpleWindow(BaseQtTest):
     """
 
     def setUp(self):
+        super().setUp()
         self.window = SimpleWindow()
         self.window.show()
 
